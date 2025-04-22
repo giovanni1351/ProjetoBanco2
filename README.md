@@ -10,8 +10,18 @@
 ```mermaid
 erDiagram
 
-    Paciente || -- |{ Agendamento : tem
+    Paciente || -- |{ Agendamento : tem 
+    Hospital || -- |{ Agendamento : tem 
+    Area_De_Atuação || -- |{ Agendamento : tem 
+    Funcionários || -- |{ Agendamento : tem 
+    Area_De_Atuação || -- |{ Area_Atuacao_Hospital : tem
+    Hospital || -- |{ Area_Atuacao_Hospital : tem
+    Especializações || -- |{ Especializacoes_Funcionario : tem
+    Funcionários || -- |{ Especializacoes_Funcionario : tem
+    Hospital || -- |{ hospital_funcionario : tem
+    Funcionários || -- |{ hospital_funcionario : tem
 
+    
 
 
 
@@ -24,10 +34,13 @@ erDiagram
     }
 
     Agendamento {
-        int id pk
+        int id_funcionario pk
         int id_funcionario fk
+        int id_paciente pk
         int id_paciente fk
+        int id_hospital pk
         int id_hospital fk
+        int id_area_atuacao pk
         int id_area_atuacao fk
         datetime data_consulta  
         bool agendamento_realizado  
