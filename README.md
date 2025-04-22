@@ -12,14 +12,17 @@ erDiagram
 
     Paciente || -- |{ Agendamento : tem 
     Hospital || -- |{ Agendamento : tem 
-    Area_De_Atuação || -- |{ Agendamento : tem 
+    Areas_De_Atuação || -- |{ Agendamento : tem 
     Funcionários || -- |{ Agendamento : tem 
-    Area_De_Atuação || -- |{ Area_Atuacao_Hospital : tem
+    Areas_De_Atuação || -- |{ Area_Atuacao_Hospital : tem
     Hospital || -- |{ Area_Atuacao_Hospital : tem
     Especializações || -- |{ Especializacoes_Funcionario : tem
     Funcionários || -- |{ Especializacoes_Funcionario : tem
     Hospital || -- |{ hospital_funcionario : tem
     Funcionários || -- |{ hospital_funcionario : tem
+    Funcionários || -- |{ Hospital: administra
+    Areas_De_Atuação || -- |{ Areas_De_Atuação_Especialização : tem
+    Especializações || -- |{ Areas_De_Atuação_Especialização : tem
 
     
 
@@ -30,6 +33,8 @@ erDiagram
         string nome 
         int idade
         date data_nascimento
+        string cpf
+        char sexo
         
     }
 
@@ -50,20 +55,37 @@ erDiagram
     Funcionários {
         int id pk
         string nome
+        float salario
+        int idade
+        date data_nascimento
+
+        
     }
 
-    Area_De_Atuação {
+    Areas_De_Atuação {
         int id pk
-
+        string nome
+        string codigo_area
+        
     }
 
     Especializações {
         int id pk
-        string Descricao
+        string Nome 
+        string descricao
+        string codigo_especializacao
     }
 
     Hospital {
         int id pk
+        string nome
+        string endereço
+        int quantidade_quartos
+        int leitos
+        int avaliacao
+        int cnpj
+        int id_responsavel fk
+
 
     }
 
@@ -85,6 +107,12 @@ erDiagram
         int id_funcionario fk
         int id_hospital pk
         int id_hospital fk
+    }
+    Areas_De_Atuação_Especialização{
+        int id_Area_Atuacao pk
+        int id_Especializacao fk
+        int id_Area_Atuacao pk
+        int id_Especializacao fk
     }
 
 
