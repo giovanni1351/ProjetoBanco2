@@ -1,13 +1,13 @@
-;DROP TABLE IF EXISTS public.Funcionario
-;DROP TABLE IF EXISTS public.Hospital
-;DROP TABLE IF EXISTS public.Paciente
-;DROP TABLE IF EXISTS public.AreaDeAtuacao
-;DROP TABLE IF EXISTS public.Especializacao
-;DROP TABLE IF EXISTS public.AreaAtuacaoHospital
-;DROP TABLE IF EXISTS public.Hospital_Funcionario
-;DROP TABLE IF EXISTS public.Agendamento
-;DROP TABLE IF EXISTS public.Area_Atuacao_Especializacao
-;DROP TABLE IF EXISTS public.Especializacao_Funcionario
+;DROP TABLE IF EXISTS public.Funcionario CASCADE
+;DROP TABLE IF EXISTS public.Hospital CASCADE
+;DROP TABLE IF EXISTS public.Paciente CASCADE
+;DROP TABLE IF EXISTS public.AreaDeAtuacao CASCADE
+;DROP TABLE IF EXISTS public.Especializacao CASCADE
+;DROP TABLE IF EXISTS public.AreaAtuacaoHospital CASCADE
+;DROP TABLE IF EXISTS public.Hospital_Funcionario CASCADE
+;DROP TABLE IF EXISTS public.Agendamento CASCADE
+;DROP TABLE IF EXISTS public.Area_Atuacao_Especializacao CASCADE
+;DROP TABLE IF EXISTS public.Especializacao_Funcionario CASCADE
 
 ;create table public.Funcionario(
 	id SERIAL not null primary key,
@@ -37,7 +37,7 @@
     sexo varchar(1) not null
 )
 
-;create table public.AreaDeAtuacao(
+;create table public.Area_De_Atuacao(
 	id SERIAL not null primary key,
 	nome VARCHAR(100) not null,
 	codigo_area varchar(15) not null
@@ -50,7 +50,7 @@
     codigo_especializacao VARCHAR(100) not null
 )
 
-;create table public.AreaAtuacaoHospital(
+;create table public.Area_Atuacao_Hospital(
 	id_hospital int not null,
 	id_area_atuacao int not null,
     PRIMARY KEY (id_hospital, id_area_atuacao)
