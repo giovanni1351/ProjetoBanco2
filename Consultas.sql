@@ -150,3 +150,87 @@ SELECT
 FROM public.paciente p
 GROUP BY p.sexo;
 
+
+-- Calcular o salário médio dos funcionários por especialização.
+SELECT
+    e.nome AS Nome_Especializacao,
+    ROUND(AVG(f.salario)::numeric, 2) AS Salario_Medio
+FROM public.funcionario f
+JOIN public.especializacao_funcionario ef ON f.id = ef.id_funcionario
+JOIN public.especializacao e ON ef.id_especializacao = e.id
+GROUP BY e.nome
+ORDER BY Salario_Medio DESC;
+
+-- Calcular o número total de leitos por faixa de avaliação do hospital.
+SELECT
+    CASE
+        WHEN h.avaliacao = 5 THEN '5 Estrelas'
+        WHEN h.avaliacao = 4 THEN '4 Estrelas'
+        WHEN h.avaliacao = 3 THEN '3 Estrelas'
+        WHEN h.avaliacao = 2 THEN '2 Estrelas'
+        WHEN h.avaliacao = 1 THEN '1 Estrela'
+        ELSE 'Sem Avaliação'
+    END AS Faixa_Avaliacao,
+    SUM(h.leitos) AS Total_Leitos
+FROM public.hospital h
+GROUP BY Faixa_Avaliacao
+ORDER BY Faixa_Avaliacao DESC;
+
+-- Encontrar a área de atuação com o maior número de agendamentos registrados.
+SELECT
+    aa.nome AS Area_Atuacao_Mais_Movimentada,
+    COUNT(a.id_paciente) AS Total_Agendamentos
+FROM public.agendamento a
+JOIN public.area_de_atuacao aa ON a.id_area_atuacao = aa.id
+GROUP BY aa.nome
+ORDER BY Total_Agendamentos DESC
+LIMIT 1;
+
+-- Calcular a quantidade média de funcionários por hospital.
+SELECT AVG(funcionarios_por_hospital) AS Media_Funcionarios_Por_Hospital
+FROM (
+    SELECT h.id, COUNT(hf.id_funcionario) AS funcionarios_por_hospital
+    FROM public.hospital h
+    LEFT JOIN public.hospital_funcionario hf ON h.id = hf.id_hospital
+    GROUP BY h.id
+) AS contagem_funcionarios;
+
+-- Listar hospitais e a diferença entre a quantidade de quartos e leitos.
+SELECT
+    h.nome AS Nome_Hospital,
+    h.quantidade_quartos,
+    h.leitos,
+    (h.quantidade_quartos - h.leitos) AS Diferenca_Quartos_Leitos
+FROM public.hospital h
+ORDER BY Diferenca_Quartos_Leitos DESC;
+
+-- Encontrar o paciente mais velho e o mais novo registrado.
+(SELECT nome AS Nome_Paciente, idade AS Idade, 'Mais Velho' AS Status FROM public.paciente ORDER BY idade DESC LIMIT 1)
+UNION ALL
+(SELECT nome AS Nome_Paciente, idade AS Idade, 'Mais Novo' AS Status FROM public.paciente ORDER BY idade ASC LIMIT 1);
+
+-- Calcular a média salarial dos funcionários que NÃO estão associados a nenhum hospital.
+SELECT ROUND(AVG(f.salario)::numeric, 2) AS Salario_Medio_Funcionarios_Sem_Hospital
+FROM public.funcionario f
+LEFT JOIN public.hospital_funcionario hf ON f.id = hf.id_funcionario
+WHERE hf.id_hospital IS NULL;
+
+-- Contar o número de especializações distintas oferecidas em cada hospital (com base nos funcionários).
+SELECT
+    h.nome AS Nome_Hospital,
+    COUNT(DISTINCT ef.id_especializacao) AS Numero_Especializacoes_Distintas
+FROM public.hospital h
+JOIN public.hospital_funcionario hf ON h.id = hf.id_hospital
+JOIN public.especializacao_funcionario ef ON hf.id_funcionario = ef.id_funcionario
+GROUP BY h.nome
+ORDER BY Numero_Especializacoes_Distintas DESC;
+
+-- Determinar o mês com o maior número de agendamentos.
+SELECT
+    TO_CHAR(data_consulta, 'YYYY-MM') AS Mes_Ano,
+    COUNT(*) AS Total_Agendamentos
+FROM public.agendamento
+GROUP BY Mes_Ano
+ORDER BY Total_Agendamentos DESC
+LIMIT 1;
+
