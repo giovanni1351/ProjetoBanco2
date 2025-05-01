@@ -483,59 +483,16 @@ def generate_data_Agendamento(n:int, engine: sqlalchemy.engine.Engine):
 
     # Garantir participação de cada paciente
     for p_id in ids_pacientes:
-        h_id = random.choice(ids_hospitais)
-        f_id = random.choice(ids_funcionarios)
-        a_id = random.choice(ids_areas)
-        data_consulta = fake.date_between(start_date='-1y', end_date='+1y')
-        # Garantir unicidade da chave primária composta
-        while (h_id, f_id, p_id, a_id, data_consulta) in combinacoes_geradas:
+        for a in range(fake.random_int(min=n//3,  max=n)):
+            h_id = random.choice(ids_hospitais)
+            f_id = random.choice(ids_funcionarios)
+            a_id = random.choice(ids_areas)
             data_consulta = fake.date_between(start_date='-1y', end_date='+1y')
-        combinacoes_geradas.add((h_id, f_id, p_id, a_id, data_consulta))
+            data.append({'id_hospital': h_id, 'id_paciente': p_id, 'id_funcionario': f_id, 'id_area_atuacao': a_id, 'data_consulta': data_consulta, 'agendamento_realizado': fake.boolean()})
+    
 
     # Garantir participação de cada area_de_atuacao
-    for a_id in ids_areas:
-        # Verificar se esta área já está em alguma combinação (provavelmente estará)
-        if any(combo[3] == a_id for combo in combinacoes_geradas):
-            continue # Já garantido
-        # Se não, criar uma nova combinação
-        h_id = random.choice(ids_hospitais)
-        f_id = random.choice(ids_funcionarios)
-        p_id = random.choice(ids_pacientes)
-        data_consulta = fake.date_between(start_date='-1y', end_date='+1y')
-        while (h_id, f_id, p_id, a_id, data_consulta) in combinacoes_geradas:
-             # Tentar com outra data ou outras FKs se a data colidir muito
-             data_consulta = fake.date_between(start_date='-1y', end_date='+1y')
-             if random.random() < 0.1: # Chance de tentar outras FKs
-                 h_id = random.choice(ids_hospitais)
-                 f_id = random.choice(ids_funcionarios)
-                 p_id = random.choice(ids_pacientes)
-        combinacoes_geradas.add((h_id, f_id, p_id, a_id, data_consulta))
-
-
-    # Adicionar mais combinações aleatórias até n
-    # Calcular max_combinacoes é complexo devido à data, vamos apenas limitar por n
-    while len(combinacoes_geradas) < n:
-        h_id = random.choice(ids_hospitais)
-        p_id = random.choice(ids_pacientes)
-        f_id = random.choice(ids_funcionarios)
-        a_id = random.choice(ids_areas)
-        data_consulta = fake.date_between(start_date='-1y', end_date='+1y')
-
-        # Adicionar apenas se a chave primária for única
-        combinacoes_geradas.add((h_id, f_id, p_id, a_id, data_consulta))
-        # Se n for muito grande e houver muitas colisões de PK, este loop pode ser lento
-        # ou nunca terminar. Considerar um limite de tentativas se necessário.
-
-    # Converter set de tuplas para lista de dicionários
-    data = [{
-        'id_hospital': h,
-        'id_paciente': p,
-        'id_funcionario': f,
-        'id_area_atuacao': a,
-        'data_consulta': d,
-        'agendamento_realizado': fake.boolean()
-    } for h, f, p, a, d in combinacoes_geradas]
-    random.shuffle(data)
+    
 
     return data
 
