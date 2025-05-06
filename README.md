@@ -1,4 +1,4 @@
-# Projeto 2 de banco de dados
+# Projeto 2 de banco de dados:
 
 # Alunos
  - Giovanni Chahin Morassi 22123025-3
